@@ -1,5 +1,6 @@
 from sklearn.cluster import KMeans
 from baseline import nn_model
+import matplotlib.pyplot as plt
 
 def cluster_split(X, y, labels, clusters, istrain):
 	X_clusters = []
@@ -36,13 +37,30 @@ def combine_preds(y_test_clusters, labels):
 		cluster_counters[i] += 1
 	return preds
 
-
 def cluster_model(X_train, X_test, y_train, lr=0.001, max_iter=1600, layers=(64, 128, 100), clusters = 3):
 	kmeans = KMeans(n_clusters=clusters).fit(X_train)
 	X_train_clusters, y_train_clusters = cluster_split(X_train, y_train, kmeans.labels_, clusters, True)
+	#visualize(X_train_clusters)
 	new_labels = kmeans.predict(X_test)
 	X_test_clusters = cluster_split(X_test, y_train, new_labels, clusters, False)
 
 	y_test_clusters = get_y_test_clusters(X_train_clusters, X_test_clusters, y_train_clusters, lr, max_iter, layers)
 	y_pred = combine_preds(y_test_clusters, new_labels)
 	return y_pred
+
+def visualize(clusters):
+	temp_data = []
+	prev_data = []
+	clusterlist = []
+	for i in range(len(clusters)):
+		for j in clusters[i]:
+			temp_data.append(j[0])
+			prev_data.append(j[6])
+			clusterlist.append(i)
+
+
+	plt.scatter(temp_data, prev_data, c = clusterlist)
+	plt.title('Temperature vs Previous Day PM2.5 Clusters')
+	plt.xlabel('Temperature')
+	plt.ylabel('Previous Day PM2.5')
+	plt.show()

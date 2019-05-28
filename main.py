@@ -33,6 +33,9 @@ def get_train_test(args):
 
 def plot_points(actual, pred):
     plt.scatter(actual, pred)
+    plt.title('Actual vs Predicted PM2.5 Values')
+    plt.xlabel('Actual Values')
+    plt.ylabel('Predicted Values')
     plt.show()
 
 def main():
@@ -71,7 +74,7 @@ def main():
         print("Test number {}, Test accuracy: {}".format(i, acc))
         cntr += acc
 
-        if (cntr == args.num_test-1):
+        if (i == args.num_test-1):
             plot_points(y_test, y_pred)
 
     print("Final accuracy: {}".format(cntr / args.num_test))
