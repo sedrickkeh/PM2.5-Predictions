@@ -10,17 +10,19 @@ from wavelet import wavelet_model
 from cluster import cluster_model
 
 
-def get_train_test(normalize = False):
+def get_train_test(args):
     df = pd.read_csv("features_final.csv")
 
     y = df["ug/m3"]
     y = np.array(y)
-    X = np.array([df["%"], df["Degree Celsius_x"], df["Degree Celsius_y"], df["m/s"], df["Day of Week"], df["Normalized Day of Year"], df["Previous Concentration"], df["Prediction Ratio"]])
+
+    if (args.hybrid): X = np.array([df["%"], df["Degree Celsius_x"], df["Degree Celsius_y"], df["m/s"], df["Day of Week"], df["Normalized Day of Year"], df["Previous Concentration"], df["Prediction Ratio"]])
+    else: X = np.array([df["%"], df["Degree Celsius_x"], df["Degree Celsius_y"], df["m/s"], df["Day of Week"], df["Normalized Day of Year"], df["Previous Concentration"]])
     X = np.transpose(X)
 
     a = df["Degree Celsius_y"]
 
-    if (normalize):
+    if (args.normalize):
         y = y / y.max(axis=0)
         X = X / X.max(axis=0)
 
@@ -36,13 +38,13 @@ def main():
     parser.add_argument("--layers", type=tuple, default=(64, 128, 100))
     parser.add_argument("--clusters", type=int, default=3)
     parser.add_argument("--num_test", type=int, default=50)
-    parser.add_argument("-n", "--normalize", action='store_true')
+    parser.add_argument("-hybrid", "--hybrid", action='store_true')
+    parser.add_argument("-normalize", "--normalize", action='store_true')
     args = parser.parse_args()
 
     cntr = 0
     for i in range(args.num_test):
-        X_train, X_test, y_train, y_test = get_train_test(args.normalize)
-
+        X_train, X_test, y_train, y_test = get_train_test(args)
 
         # Mode 0 = baseline model
         # Mode 1 = wavelet model
@@ -61,9 +63,9 @@ def main():
             return
 
         acc = r2_score(y_test, y_pred)
-        print(i, acc)
+        print("Test number {}, Test accuracy: {}".format(i, acc))
         cntr += acc
-    print(cntr / 100)
+    print("Final accuracy: {}".format(cntr / args.num_test))
 
 if __name__=="__main__":
     main()
