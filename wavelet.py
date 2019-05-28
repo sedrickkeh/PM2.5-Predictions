@@ -6,7 +6,7 @@ def get_components(X):
 	coeffs = pywt.wavedec(X, 'db1', level = 4)
 	return coeffs
 
-def fit_model(c1, c2, c3, c4, c5, c6, c7, y, lr=0.001, max_iter=800, layers=(64, 128, 100)):
+def fit_model(c1, c2, c3, c4, c5, c6, c7, y, lr=0.001, max_iter=1600, layers=(64, 128, 100)):
 	train =  np.array([c1, c2, c3, c4, c5, c6, c7])
 	train = np.transpose(train)
 	model = MLPRegressor(learning_rate_init=lr, max_iter=max_iter, hidden_layer_sizes = layers)
@@ -19,7 +19,7 @@ def predict_model(c1, c2, c3, c4, c5, c6, c7, model):
 	y = model.predict(test)
 	return y
 
-def wavelet_model(X_train, X_test, y_train, lr=0.001, max_iter=800, layers=(64, 128, 100)):
+def wavelet_model(X_train, X_test, y_train, lr=0.001, max_iter=1600, layers=(64, 128, 100)):
 	cA4_1, cD4_1, cD3_1, cD2_1, cD1_1 = get_components(X_train[:,0])
 	cA4_2, cD4_2, cD3_2, cD2_2, cD1_2 = get_components(X_train[:,1])
 	cA4_3, cD4_3, cD3_3, cD2_3, cD1_3 = get_components(X_train[:,2])

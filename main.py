@@ -4,6 +4,7 @@ import argparse
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.preprocessing import normalize
+import matplotlib.pyplot as plt
 
 from baseline import nn_model
 from wavelet import wavelet_model
@@ -29,6 +30,10 @@ def get_train_test(args):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=52)
     return X_train, X_test, y_train, y_test
 
+
+def plot_points(actual, pred):
+    plt.scatter(actual, pred)
+    plt.show()
 
 def main():
     parser = argparse.ArgumentParser()
@@ -65,6 +70,10 @@ def main():
         acc = r2_score(y_test, y_pred)
         print("Test number {}, Test accuracy: {}".format(i, acc))
         cntr += acc
+
+        if (cntr == args.num_test-1):
+            plot_points(y_test, y_pred)
+
     print("Final accuracy: {}".format(cntr / args.num_test))
 
 if __name__=="__main__":

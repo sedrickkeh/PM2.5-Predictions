@@ -37,7 +37,7 @@ def combine_preds(y_test_clusters, labels):
 	return preds
 
 
-def cluster_model(X_train, X_test, y_train, lr=0.001, max_iter=800, layers=(64, 128, 100), clusters = 3):
+def cluster_model(X_train, X_test, y_train, lr=0.001, max_iter=1600, layers=(64, 128, 100), clusters = 3):
 	kmeans = KMeans(n_clusters=clusters).fit(X_train)
 	X_train_clusters, y_train_clusters = cluster_split(X_train, y_train, kmeans.labels_, clusters, True)
 	new_labels = kmeans.predict(X_test)
